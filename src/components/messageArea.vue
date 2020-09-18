@@ -1,5 +1,5 @@
 <template>
-    <div class="message-area">
+    <div class="message-area" v-loading="loading">
         <div style="height: calc(100% - 94px); overflow-y: auto; flex-direction: column;
   justify-content: flex-end;
   flex-wrap: nowrap;">
@@ -24,7 +24,7 @@
                 </li>
             </ul>
         </div>
-        <div class="send-block">
+        <div class="send-block" v-loading="loadingSend">
             <el-input
                 type="textarea"
                 :rows="4"
@@ -54,23 +54,31 @@ export default {
                 created: '2019-08-06 12:38',
                 text: this.newMessage,
             };
+            this.loadingSend = true;
             this.sendMessage(newMessage);
             this.newMessage = '';
+            setInterval(() => this.loadingSend = false, 5000);
         }
     },
     mounted() {
         const idDialog = parseInt(this.$route.params.idDialog);
+        this.loading = true;
         this.getDialog(idDialog);
+        setInterval(() => this.loading = false, 5000);
     },
     watch: {
         $route() {
             const idDialog = this.$route.params.idDialog;
+            this.loading = true;
             this.getDialog(idDialog);
+            setInterval(() => this.loading = false, 5000);
         }
     },
     data() {
         return {
             newMessage: '',
+            loading: false,
+            loadingSend: false,
         }
     }
 };
